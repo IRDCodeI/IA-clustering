@@ -19,7 +19,13 @@ def nlpdocument(file):
     file = file.apply(lambda x: x.apply(normalize))
     file = file.apply(lambda x: x.apply(doc_tokens, "broadcast"))
 
-    tokenize(file)
+    # >> Bagwords
+    tokens = element_df(file)
+    doc = element_df(df)
+    bagw = bag_words(columns = [doc], index = [tokens])
+    tfidf = tf_idf(bagw)
+
+    return tfidf.to_json()
     
 
 def normalize(doc):
@@ -56,16 +62,17 @@ def doc_tokens(docs):
     tokens = np.delete(tokens, np.where((tokens == "") | (tokens == "'")))
 
   return tokens
+  
 
-def tokenize(df: pd.DataFrame):
-  list_df = []
-  # Iterate through the columns of dataframe
-  for column in df.columns:
-    list1 = df[column].to_numpy().tolist()
-    list_df.append(list1)
-  
-  print(list_df)
-  
+def element_df(df: pd.DataFrame, **kwargs):
+    tokens = np.array([])
+    for column in df.columns:
+      list1 = df[column].values
+      tokens = np.hstack((tokens, list1))
+      tokens = np.hstack(tokens)
+      tokens = np.unique(tokens)
+
+    return tokens
 
 
 # ---- UNTIL HERE ----
@@ -88,8 +95,13 @@ def bag_words(**kwarg):
 
   bag_words = pd.DataFrame(columns= bag_words_colums, index= bag_words_index)
   
+  #bag_words.apply(lambda x: pd.Series(docs).str.count(x.index).transpose(), axis =)
+
   for token in tokens:
-    bag_words.loc[token] = list(np.char.count(docs, token))
+    bag_words.loc[token] = pd.Series(docs).str.count(token).transpose()
+
+  bagw_zeros = pd.Index(bag_words[bag_words.sum(axis = 1) == 0].index)
+  bag_words = bag_words.drop(bagw_zeros, axis = 0)
 
   return bag_words
 
@@ -98,17 +110,11 @@ def tf_idf(bag_words: pd.DataFrame):
   idf = []
   wtf = bag_words.copy()
 
-  for doc in bag_words:
-    wtf[doc] = wtf[doc].apply(tf_weigth)
-
+  wtf = wtf.apply(lambda x: x.apply(tf_weigth))
   df = wtf.astype(bool).sum(axis=1)
-
-  for value in df:
-    idf.append(idf_doc(value))
-
-  idf = pd.DataFrame(idf)
+  idf = pd.DataFrame(df.apply(idf_doc, size=bag_words.shape[1]))
   tf_idf = wtf*idf.values
-
+  
   return tf_idf
 
   
@@ -120,9 +126,9 @@ def tf_weigth(value):
   
   return res
 
-def idf_doc(value):
+def idf_doc(value, size):
   if value != 0:
-    res = math.log10(bag_words.shape[1]/value)
+    res = math.log10(size/value)
   else:
     res = None
 

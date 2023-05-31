@@ -1,7 +1,8 @@
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.encoders import jsonable_encoder
+from fastapi.responses import JSONResponse
 from pydantic import BaseModel
-from typing_extensions import Annotated
 from nlp import nlpdocument
 import typing
 
@@ -22,7 +23,5 @@ app.add_middleware(
 @app.post('/nlp/')
 async def nlp(file: Request):
   data =  await file.json()
-  nlpdocument(data["file"])
-  return {
-     "file_size": len(file)
-  }
+  nlp_file = jsonable_encoder(nlpdocument(data["file"]))
+  return JSONResponse(content=nlp_file)
