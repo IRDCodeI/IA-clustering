@@ -12,15 +12,15 @@ nltk.download('stopwords')
 stw_eng = stopwords.words('english')
 stemmer = PorterStemmer()
 
+def nlpdocument(file):      
+    df = pd.DataFrame(file["data"],index = None, columns = file["index"])
 
-tokens = []
+    file = df.copy(deep=True)
+    file = file.apply(lambda x: x.apply(normalize))
+    file = file.apply(lambda x: x.apply(doc_tokens, "broadcast"))
 
-def nlpdocument(file):
-    df = pd.DataFrame(file["data"],index=None,columns = file["index"])
-    df = df.apply(lambda x: x.apply(normalize))
-    df.apply(lambda x: x.apply(doc_tokens, "broadcast"))
-
-    print(tokens)
+    tokenize(file)
+    
 
 def normalize(doc):
   if not isinstance(doc, (float, int)):
@@ -40,7 +40,7 @@ def tokenize_document(doc):
 
 def doc_tokens(docs):
 
-  global tokens
+  tokens = []
 
   if not isinstance(docs, (float, int)):
  
@@ -56,6 +56,17 @@ def doc_tokens(docs):
     tokens = np.delete(tokens, np.where((tokens == "") | (tokens == "'")))
 
   return tokens
+
+def tokenize(df: pd.DataFrame):
+  list_df = []
+  # Iterate through the columns of dataframe
+  for column in df.columns:
+    list1 = df[column].to_numpy().tolist()
+    list_df.append(list1)
+  
+  print(list_df)
+  
+
 
 # ---- UNTIL HERE ----
 
