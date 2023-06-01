@@ -25,7 +25,7 @@ def nlpdocument(file):
     bagw = bag_words(columns = [doc], index = [tokens])
     tfidf = tf_idf(bagw)
 
-    return tfidf.to_json()
+    return tfidf
     
 
 def normalize(doc):
