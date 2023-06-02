@@ -4,6 +4,7 @@ from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 from mds import mds
+from metafile import meta
 import typing
 
 
@@ -26,3 +27,10 @@ async def nlp(file: Request):
     data = await file.json()
     nlp_file = jsonable_encoder(mds(data["file"]))
     return JSONResponse(content=nlp_file)
+
+
+@app.post("/meta/")
+async def data(file: Request):
+    data = await file.json()
+    metafile = jsonable_encoder(meta(data["file"]))
+    return JSONResponse(content=metafile)
