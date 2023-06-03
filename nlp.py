@@ -1,11 +1,11 @@
+from nltk.stem.porter import PorterStemmer
+from nltk.corpus import stopwords
 import pandas as pd
 import numpy as np
-import re
-import math
-
 import nltk
-from nltk.corpus import stopwords
-from nltk.stem.porter import PorterStemmer
+import math
+import re
+
 
 nltk.download('stopwords')
 

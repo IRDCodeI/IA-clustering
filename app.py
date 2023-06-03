@@ -3,9 +3,9 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
+from ia import generateAbstract
 from mds import mds
 from metafile import meta
-from ia import generateAbstract
 import typing
 
 class Data(BaseModel):
@@ -35,6 +35,6 @@ async def data(file: Request):
 
 @app.post("/ai_abstract/")
 async def abstractGenerate(doc: Request):
-    doc = await doc.json()
-    abstract = jsonable_encoder(generateAbstract(data["doc"]))
+    doc = await doc.json()    
+    abstract = jsonable_encoder(generateAbstract(doc["doc"], model = doc["doc"]["model"]))
     return JSONResponse(content=abstract)

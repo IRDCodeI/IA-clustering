@@ -1,5 +1,3 @@
-import matplotlib.pyplot as plt
-import matplotlib as mlt
 from sklearn.decomposition import PCA
 from nlp import nlpdocument
 import json

@@ -1,18 +1,16 @@
 from dotenv import load_dotenv
-load_dotenv()
-import os
 import MySQLdb
-
+import os
+load_dotenv()
 
 connection = MySQLdb.connect(
-  host= os.getenv("HOST"),
-  user=os.getenv("USERNAME"),
-  passwd= os.getenv("PASSWORD"),
-  db= os.getenv("DATABASE"),
+  host= "aws.connect.psdb.cloud",
+  user="u0nw9hd9elv9i3csjc7m",
+  passwd= "pscale_pw_PkAe48lOi72rK3OSjki5uQEdlmIYVKO6H4ygekOmG5P",
+  db= "rdcode",
   autocommit = True,  
   ssl_mode = "VERIFY_IDENTITY",
   ssl      = {
-    "ca": "/etc/ssl/cert.pem",
-    "rejectUnauthorized": "true"
+    "ca": "/etc/ssl/certs/ca-certificates.crt"
   }
 )

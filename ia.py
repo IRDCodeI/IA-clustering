@@ -1,11 +1,12 @@
+from database import connection as db
+from dotenv import load_dotenv
 import openai
 import os
-from database import connection
-from dotenv import load_dotenv
 load_dotenv()
 
-key = os.environ.get("ChatGPT_KEY")
+key = "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"
 openai.api_key = key
+cursor = db.cursor()
 
 def requestModel(doc):
     res = openai.ChatCompletion.create(
@@ -17,16 +18,28 @@ def requestModel(doc):
         temperature=0.7
     )
 
-    return res.choices[0].content
+    return res.choices[0]["message"]["content"]
 
 def generateAbstract(doc, **kwargs):
 
-    abstract = {}
+    abstract = ()
+    sql = f"SELECT * FROM ai_abstract WHERE title = \"%s\" AND model = \"%s\";" % (doc['title'], doc['model'])
+    res = cursor.execute(sql)
 
-    for item in kwargs.items():
-        if (item == "ChatGPT"):
-            abstract = requestModel(doc)
-        else:
-            print("No selected model")
+    print(res)
+
+    if(res != 0):
+        abstract = cursor.fetchone()
+        abstract = abstract[3]
+    else:
+        for arg in kwargs.items():
+            if (arg[0] == "model" and arg[1] == "chatgpt"):
+                abstract = requestModel(doc)
+                sql = f"""INSERT INTO ai_abstract(title, abstract_original, abstract_generate, model) 
+                        VALUES (\"{doc['title']}\", \"{doc['abstract']}\", \"{abstract}\", \"{doc['model']}\");"""
+                                                
+                cursor.execute(sql)
+            else:
+                print("No selected model")
     
     return abstract
