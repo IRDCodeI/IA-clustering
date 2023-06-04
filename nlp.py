@@ -12,8 +12,9 @@ nltk.download('stopwords')
 stw_eng = stopwords.words('english')
 stemmer = PorterStemmer()
 
-def nlpdocument(file):      
-    df = pd.DataFrame(file["data"],index = None, columns = file["index"])
+def nlpdocument(df):      
+    if(type(df) == dict):
+      df = pd.DataFrame(df["data"],index = None, columns = df["index"])    
 
     file = df.copy(deep=True)
     file = file.apply(lambda x: x.apply(normalize))

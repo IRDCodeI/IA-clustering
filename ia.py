@@ -4,7 +4,7 @@ import openai
 import os
 load_dotenv()
 
-key = "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"
+key = "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"
 openai.api_key = key
 cursor = db.cursor()
 
@@ -37,7 +37,8 @@ def generateAbstract(doc, **kwargs):
                 abstract = requestModel(doc)
                 sql = f"""INSERT INTO ai_abstract(title, abstract_original, abstract_generate, model) 
                         VALUES (\"{doc['title']}\", \"{doc['abstract']}\", \"{abstract}\", \"{doc['model']}\");"""
-                                                
+
+                print(sql)                    
                 cursor.execute(sql)
             else:
                 print("No selected model")

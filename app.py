@@ -6,6 +6,7 @@ from pydantic import BaseModel
 from ia import generateAbstract
 from mds import mds
 from metafile import meta
+import similary
 import typing
 
 class Data(BaseModel):
@@ -38,3 +39,14 @@ async def abstractGenerate(doc: Request):
     doc = await doc.json()    
     abstract = jsonable_encoder(generateAbstract(doc["doc"], model = doc["doc"]["model"]))
     return JSONResponse(content=abstract)
+
+@app.get("/similarity/documents/")
+async def documents(model: str = ""):
+    docs = jsonable_encoder(similary.getDocumentsBD(model))
+    return JSONResponse(content=docs)
+
+@app.post("/similarity/")
+async def similarity(doc: Request):
+    data = await doc.json()
+    res = jsonable_encoder(similary.getSimilarityDocs(data["doc"]))
+    return JSONResponse(content=res)

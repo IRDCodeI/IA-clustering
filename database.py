@@ -5,8 +5,8 @@ load_dotenv()
 
 connection = MySQLdb.connect(
   host= "aws.connect.psdb.cloud",
-  user="u0nw9hd9elv9i3csjc7m",
-  passwd= "pscale_pw_PkAe48lOi72rK3OSjki5uQEdlmIYVKO6H4ygekOmG5P",
+  user="h1ftdmjlonb86ge2ejqn",
+  passwd= "pscale_pw_FWj5dK7Yzpdv0XcQPQPGUnnizprgk4n0lr9hDqx09Kh",
   db= "rdcode",
   autocommit = True,  
   ssl_mode = "VERIFY_IDENTITY",
