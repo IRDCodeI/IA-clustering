@@ -4,7 +4,7 @@ import openai
 import os
 load_dotenv()
 
-key = "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"
+key = ""
 openai.api_key = key
 cursor = db.cursor()
 
