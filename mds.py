@@ -7,11 +7,11 @@ def mds(file):
     pca = PCA(n_components=2)
     pca.fit_transform(mds)
 
-    axis = pca.components_.T
+    axis = pca.components_
 
     data = {
-        "x": axis[:,0].tolist(),
-        "y": axis[:,1].tolist(),
+        "x": axis[0].tolist(),
+        "y": axis[1].tolist(),
         "dots": axis.tolist()
     }
 

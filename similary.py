@@ -16,7 +16,7 @@ def getSimilarityDocs(doc):
         dataset = pd.DataFrame(dataset, columns=["id","title","abstract", "abstract_generate", "model"]) 
         index = dataset[dataset.title == doc["title"]].index.to_list()[0]  
 
-        bagw = nlpdocument(dataset[["abstract", "abstract_generate"]])
+        bagw = nlpdocument(dataset[["abstract", "abstract_generate"]]).transpose()
         docs = dataset.shape[0]
 
         cosine_docs = distance_doc(bagw)

@@ -6,6 +6,9 @@ from pydantic import BaseModel
 from ia import generateAbstract
 from mds import mds
 from metafile import meta
+from clustering import clustering
+from clustering import labels_cluster
+from clustering import validation_cluster
 import similary
 import typing
 
@@ -49,4 +52,19 @@ async def documents(model: str = ""):
 async def similarity(doc: Request):
     data = await doc.json()
     res = jsonable_encoder(similary.getSimilarityDocs(data["doc"]))
+    return JSONResponse(content=res)
+
+@app.get("/clustering/")
+async def cluster(ai: str = "chatgpt", clusters: int = 1, model: str = "kmeans"):
+    res = jsonable_encoder(clustering(ai= ai, clusters= clusters, algorithm= model))
+    return JSONResponse(content= res)
+
+@app.get("/clustering/labels/")
+async def cluster_labels(abstract: str = "original", ai: str = "chatgpt", clusters: int = 1, model: str = "kmeans"):
+    res = jsonable_encoder(labels_cluster(abstract= abstract,ai= ai, clusters= clusters, algorithm= model))
+    return JSONResponse(content= res)
+
+@app.get("/clustering/validation/")
+async def cluster_validation(ai: str="chatgpt", n: int = 1, cluster: str = "kmeans"):
+    res = jsonable_encoder(validation_cluster(ai=ai, n=n, cluster= cluster))
     return JSONResponse(content=res)

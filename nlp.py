@@ -1,3 +1,4 @@
+from sklearn.feature_extraction.text import TfidfTransformer
 from nltk.stem.porter import PorterStemmer
 from nltk.corpus import stopwords
 import pandas as pd
@@ -20,11 +21,15 @@ def nlpdocument(df):
     file = file.apply(lambda x: x.apply(normalize))
     file = file.apply(lambda x: x.apply(doc_tokens, "broadcast"))
 
-    # >> Bagwords
     tokens = element_df(file)
     doc = element_df(df)
     bagw = bag_words(columns = [doc], index = [tokens])
-    tfidf = tf_idf(bagw)
+
+    transform =TfidfTransformer(norm="l2", use_idf=True, smooth_idf=True, sublinear_tf=True)
+    tf_idf = transform.fit_transform(bagw)
+
+    tfidf = pd.DataFrame(tf_idf.toarray(), columns = transform.get_feature_names_out())
+    tfidf = tfidf.transpose()
 
     return tfidf
     
