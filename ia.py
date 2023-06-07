@@ -8,8 +8,8 @@ import nlp
 import os
 load_dotenv()
 
-token = 'XQjyT3b0x0PYB8Eo1_6g3SWAmiEDCnUwuLUV7JayeTqDHyu9O1Mj_YCQ_16hkqDsAA3Tqg.'
-key = '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'
+token = ''
+key = ''
 openai.api_key = key
 
 cursor = db.cursor()
